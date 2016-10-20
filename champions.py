@@ -147,30 +147,30 @@ class Champion:
 
     def __init__(self, name, level = 1):
         self.name = name
-        self.id = champion_list[name]
-        self.spells = self.get_spells()
-        self.stats = self.get_stats()
         self.level = level
+        self.id = champion_list[name]
+        self.spells = get_spells(self.id)
+        self.stats = get_stats(self.id)
 
-    def get_api_json(self, type):
-        '''Makes a request to the RIOT api with the given type
-        (usually spells or stats) and returns a json object.
-        '''
-        url = champ_request_url + str(self.id) + "?champData=" + type + \
-              "&api_key=" + api_key
-        dto = requests.get(url)
-        return json.loads(dto.text)
 
-    def get_spells(self):
-        '''Gets the champion's stats from the RIOT api.'''
-        # Keyword: "spells"
-        json = self.get_api_json("spells")
+def get_api_json(id, type):
+    '''Makes a request to the RIOT api with the given type
+    (usually spells or stats) and returns a json object.'''
+    url = champ_request_url + str(id) + "?champData=" + type + \
+          "&api_key=" + api_key
+    dto = requests.get(url)
+    return json.loads(dto.text)
 
-        raise NotImplementedError
 
-    def get_stats(self):
-        '''Gets the champion's stats from the RIOT api.'''
-        # Keyword: "stats"
-        json = self.get_api_json("stats")
+def get_spells(id):
+    '''Gets the champion's stats from the RIOT api.'''
+    # Keyword: "spells"
+    json = get_api_json(id, "spells")
+    raise NotImplementedError
 
-        raise NotImplementedError
+
+def get_stats(id):
+    '''Gets the champion's stats from the RIOT api
+    and returns them as a dictionary.'''
+    json = get_api_json(id, "stats")
+    return json["stats"]
